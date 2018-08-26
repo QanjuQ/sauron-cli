@@ -9,8 +9,9 @@ const github = new GithubGraphQLApi({
 
 const queryGenerator = new QueryGenerator();
 
-const printUserInfo = function (vorpal, userinfo, username) {
+const printUserInfo = function (vorpal, userinfo) {
     // print user info in particular format
+    vorpal.log(userinfo);
 }
 
 vorpal
@@ -20,12 +21,21 @@ vorpal
 vorpal
     .command('userinfo <username>', 'takes a git username as argument and prints the info')
     .action(function (args, callback) {
-        let username = args.username;
-        let query = queryGenerator.getFetchUserSummaryQuery(username);
+        let query = queryGenerator.getFetchUserSummaryQuery(args.username);
         github.query(query, null, (response, err) => {
-            let responseData = JSON.stringify(response, null, 2);
-            console.log(responseData);
-            printUserInfo(vorpal, response.data[username], username);
+            let responseData = JSON.stringify(response.data, null, 2);
+            printUserInfo(vorpal, responseData);
+            callback();
+        });
+    });
+
+vorpal.command('usersinfo [usernames...]',
+        'takes a git usernames as argument and prints the info all users specified')
+    .action(function (args, callback) {
+        let query = queryGenerator.getFetchUsersSummaryQuery(args.usernames);
+        github.query(query, null, (response, err) => {
+            let responseData = JSON.stringify(response.data, null, 2);
+            printUserInfo(vorpal, responseData);
             callback();
         });
     });
