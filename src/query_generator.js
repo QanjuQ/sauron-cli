@@ -5,8 +5,12 @@ class QueryGenerator {
 
     }
     getFetchUserSummaryQuery(username) {
+        console.log(`query {
+            user(login: "${username}") {
+                ...UserSummary
+            }}`);
         return `query {
-            user(login: ${username}) {
+            user(login: "${username}") {
                 ...UserSummary
             }
         } ${userSummaryFrag}`;
@@ -15,10 +19,9 @@ class QueryGenerator {
 
     getFetchUsersSummaryQuery(usernames) {
         let query = 'query {';
-        query = usernames.reduce((currQuery, username) => {
-            return currQuery + `${username}: user(login: "${username}") { ...UserSummary}`;
+        query = usernames.reduce((currQuery, username, index) => {
+            return `${currQuery} user${index+1}: user(login: "${username}") { ...UserSummary}`;
         }, query);
-
         return query + "}" + userSummaryFrag;
     }
 

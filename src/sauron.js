@@ -53,7 +53,7 @@ vorpal.command('usersinfo [usernames...]',
 
 vorpal.command('save <variable>', 'saves output of a command into a variable')
     .action(function (args, callback) {
-        userStore[args.variable] = args.stdin;
+        userStore[args.variable] = args.stdin || '';
         vorpal.log(`output stored in '${args.variable}'`);
         callback();
     });
@@ -68,6 +68,7 @@ vorpal.command('get <variable>', 'saves output of a command into a variable')
 
 vorpal.command('storedvariables', 'shows the variable that you stored')
     .action(function (args, callback) {
-        vorpal.log(Object.keys(userStore).join('\n'));
+        vorpal.log("VariableStored are: \n->" +
+            Object.keys(userStore).join('\n->  '));
         callback();
     });
