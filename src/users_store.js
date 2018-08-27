@@ -5,7 +5,9 @@ class UserStore {
     }
 
     saveIntoVariable(args, callback) {
+        this.vorpal.log(this.variableStore, "store");
         this.variableStore[args.variable] = args.stdin || '';
+        this.vorpal.log(this.variableStore, "store");
         this.vorpal.log(`output stored in '${args.variable}'`);
         callback();
     }
