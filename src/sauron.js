@@ -59,7 +59,7 @@ vorpal.command('save <variable>', 'saves output of a command into a variable')
     });
 
 
-vorpal.command('get <variable>', 'saves output of a command into a variable')
+vorpal.command('get <variable>', 'prints what is stored in variable')
     .validate(variableExists)
     .action(function (args, callback) {
         vorpal.log(userStore[args.variable].toString());
