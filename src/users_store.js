@@ -18,7 +18,7 @@ class UserStore {
     }
 
     getStoredVariables(args, callback) {
-        this.vorpal.log("VariableStored are: \n->" +
+        this.vorpal.log("VariableStored are: \n-> " +
             Object.keys(this.variableStore).join('\n->  '));
         callback();
     }
