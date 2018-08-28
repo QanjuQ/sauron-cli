@@ -2,14 +2,13 @@ const userSummaryFrag = require("./queries.js").userSummary;
 
 class QueryGenerator {
     constructor() {}
-    getFetchUserSummaryQuery(username) {
-        return `query {
-            user(login: "${username}") {
-                ...UserSummary
-            }
-        } ${userSummaryFrag}`;
-    }
-
+    // getFetchUserSummaryQuery(username) {
+    //     return `query {
+    //         user(login: "${username}") {
+    //             ...UserSummary
+    //         }
+    //     } ${userSummaryFrag}`;
+    // }
 
     getFetchUsersSummaryQuery(usernames) {
         let query = 'query {';

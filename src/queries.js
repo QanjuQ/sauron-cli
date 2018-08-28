@@ -1,7 +1,8 @@
 const userSummary = `fragment UserSummary on User {
     login
     id
-    repositoriesContributedTo(first: 100, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
+    name
+    repositories(first:100){
         totalCount
         nodes {
             nameWithOwner
@@ -9,8 +10,17 @@ const userSummary = `fragment UserSummary on User {
             primaryLanguage {
                 name
             }
-            commitComments {
+            commitComments (last:1) {
                 totalCount
+                edges {
+                    node {
+                        commit {
+                            abbreviatedOid
+                            message
+                            committedDate
+                        }
+                    }
+                }
             }
         }
     }
