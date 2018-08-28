@@ -27,10 +27,12 @@ const getRequiredUserInfo = function (rawOutput) {
         commit: {},
         langs: []
     };
-    commitAndLangs = rawOutput.repositories.nodes.reduce(getLangsAndCommit, commitAndLangs);
+    let reposContributed = rawOutput.repositoriesContributedTo.nodes;
+    let reposOwned = rawOutput.repositories.nodes;
+    let totalRepos = reposContributed.concat(reposOwned);
+    commitAndLangs = totalRepos.reduce(getLangsAndCommit, commitAndLangs);
     let lastCommit = Object.values(commitAndLangs.commit).join(' \n- ');
-    return [rawOutput.login, rawOutput.name,
-        rawOutput.repositories.totalCount,
+    return [rawOutput.login, rawOutput.name, totalRepos.length,
         commitAndLangs.langs,
         lastCommit
     ];
