@@ -1,8 +1,8 @@
-const userSummary = `{
+const userSummary = `fragment userSummary on User{
     login
     id
     name
-    repositories(first: 100) {
+    repositories(last: 100) {
       totalCount
       nodes {
         nameWithOwner
@@ -14,13 +14,15 @@ const userSummary = `{
           target {
             ... on Commit {
               id
-              history(first: 1, author : {id : AUTHOR_ID}) {
+              history(first: 100) {
                 edges {
                   node {
                     oid
                     message
                     author {
+                      name
                       date
+                      user{login}
                     }
                   }
                 }

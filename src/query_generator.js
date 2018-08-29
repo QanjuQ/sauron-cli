@@ -6,11 +6,11 @@ class QueryGenerator {
     getFetchUsersSummaryQuery(usernames, ids) {
         let query = 'query {';
         query = usernames.reduce((currQuery, username, index) => {
-            let userSummary = userSummaryFrag.replace("AUTHOR_ID", ids[index])
-                .replace("AUTHOR_ID", ids[index]);
-            return `${currQuery} user${index+1}: user(login: "${username}") ${userSummary}`;
+            // let userSummary = userSummaryFrag.replace("AUTHOR_ID", ids[index])
+            //     .replace("AUTHOR_ID", ids[index]);
+            return `${currQuery} user${index+1}: user(login: "${username}") {...userSummary}`;
         }, query);
-        return query + "}";
+        return query + "}" + userSummaryFrag;
     }
 
     getUserIdsQuery(usernames) {
