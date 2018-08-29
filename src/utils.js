@@ -6,35 +6,39 @@ const getLangForRepo = function (langs, repo) {
 };
 
 const getLatestCommit = function (commit, anotherCommit) {
-    if (commit.committedDate > anotherCommit.committedDate) {
+    if (commit.date > anotherCommit.date) {
         return commit;
     }
     return anotherCommit;
 };
 
-const getLangsAndCommit = function (langAndCommit, repo) {
-    langAndCommit.langs = getLangForRepo(langAndCommit.langs, repo);
-    if (repo.commitComments && repo.commitComments.totalCount) {
-        let commit = repo.commitComments.edges[0].node.commit;
-        commit.repo = repo.nameWithOwner;
-        langAndCommit.commit = getLatestCommit(langAndCommit.commit, commit);
-    }
-    return langAndCommit;
+const getAllCommits = function (repos) {
+    return repos.reduce(
+        (commits, repo) => {
+            const formatCommit = (commit) => {
+                commit.node.repo = repo.nameWithOwner;
+                commit.node.date = commit.node.author.date;
+                delete commit.node.author;
+                console.log(commit.node);
+                return commit.node;
+            };
+            let repoCommits = repo.ref.target.history.edges;
+            if (repoCommits.length) {
+                commits = commits.concat(repoCommits.map(formatCommit));
+            }
+            return commits;
+        }, []);
 };
 
 const getRequiredUserInfo = function (rawOutput) {
-    let commitAndLangs = {
-        commit: {},
-        langs: []
-    };
-    let reposContributed = rawOutput.repositoriesContributedTo.nodes;
-    let reposOwned = rawOutput.repositories.nodes;
-    let totalRepos = reposContributed.concat(reposOwned);
-    commitAndLangs = totalRepos.reduce(getLangsAndCommit, commitAndLangs);
-    let lastCommit = Object.values(commitAndLangs.commit).join(' \n- ');
-    return [rawOutput.login, rawOutput.name, totalRepos.length,
-        commitAndLangs.langs,
-        lastCommit
+    let repos = rawOutput.repositories.nodes;
+    let languages = repos.reduce(getLangForRepo, []);
+    let commits = getAllCommits(repos);
+    let latestCommit = commits.reduce(getLatestCommit, {});
+    lastestCommit = Object.values(latestCommit).join(' \n- ');
+    return [rawOutput.login, rawOutput.name, repos.length,
+        languages,
+        lastestCommit
     ];
 };
 

@@ -22,8 +22,10 @@ vorpal
 vorpal.command('userinfo [usernames...]',
         'takes git usernames as argument and prints info of all users specified')
     .action(function (args, callback) {
-        let query = queryGenerator.getFetchUsersSummaryQuery(args.usernames);
-        gitHubAccess.fetchDataOfUsers(query, callback, this);
+        let query = queryGenerator.getUserIdsQuery(args.usernames);
+        gitHubAccess.fetchGitIdsOfUsers(args, query, callback, vorpal);
+        // let query = queryGenerator.getFetchUsersSummaryQuery(args.usernames);
+        // gitHubAccess.fetchDataOfUsers(query, callback, this);
     });
 
 

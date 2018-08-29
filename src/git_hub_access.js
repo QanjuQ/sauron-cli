@@ -27,9 +27,21 @@ const createTable = function () {
     });
 };
 
+const QueryGenerator = require('./query_generator.js');
+const queryGenerator = new QueryGenerator();
+
 class GitHubAccess {
     constructor(githubApi) {
         this.githubApi = githubApi;
+    }
+
+    fetchGitIdsOfUsers(args, query, callback, vorpal) {
+        let githubAccess = this;
+        this.githubApi.query(query, null, (response, err) => {
+            let userIds = Object.values(response.data).map((user) => user.id);
+            let query1 = queryGenerator.getFetchUsersSummaryQuery(args.usernames, userIds);
+            githubAccess.fetchDataOfUsers(query1, callback, vorpal);
+        });
     }
 
     fetchDataOfUsers(query, callback, vorpal) {
