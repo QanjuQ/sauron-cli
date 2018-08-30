@@ -1,56 +1,61 @@
+const isNotPresent = (languages, language) => {
+    return !languages.includes(language);
+};
+
 const getLangForRepo = function (langs, repo) {
-    if (repo.primaryLanguage && !langs.includes(repo.primaryLanguage.name)) {
-        langs.push(repo.primaryLanguage.name);
+    if (repo.primaryLanguage) {
+        let language = repo.primaryLanguage.name;
+        isNotPresent(langs, language) && langs.push(language);
     }
     return langs;
 };
 
 const getLatestCommit = function (commit, anotherCommit) {
-    if (commit.date > anotherCommit.date) {
-        return commit;
-    }
+    let date = commit.date;
+    let otherDate = anotherCommit.date;
+    if (date && date > otherDate) return commit;
+    if (otherDate == undefined) return commit;
     return anotherCommit;
 };
 
-const getAllCommits = function (repos) {
-    return repos.reduce(
-        (commits, repo) => {
-            const formatCommit = (commit) => {
-                commit.node.repo = repo.nameWithOwner;
-                console.log(commit.node);
-                return commit.node;
-            };
-            let repoCommits = repo.ref && repo.ref.target.history.edges;
-            if (repoCommits) {
-                commits = commits.concat(repoCommits.map(formatCommit));
-            }
-            return commits;
-        }, []);
+const formatCommit = (repo) =>
+    (commit) => {
+        commit = commit.node;
+        commit.repo = repo;
+        commit.date = commit.author.date;
+        commit.username = commit.author.user && commit.author.user.login;
+        commit.name = commit.author.name;
+        delete commit.author;
+        return commit;
+    };
+
+const getRepoCommits = (commits, repo) => {
+    let repoCommits = repo.ref && repo.ref.target.history.edges;
+    if (repoCommits) {
+        repoCommits = repoCommits.map(formatCommit(repo.nameWithOwner));
+        commits = commits.concat(repoCommits);
+    }
+    return commits;
 };
 
-const getCommitsByUser = (commits, username, name) => {
-    let commitsByUser = [];
-    commits.forEach((commit) => {
-        // console.log(commit);
-        let user = commit.author.user;
-        if (user && user.login === username ||
-            commit.author.name === name)
-            commitsByUser.push(commit);
-    });
-    return commitsByUser;
-
+const isCommitByUser = (username, name) => {
+    return (commit) => {
+        let user = commit.user;
+        return (user && user.login === username ||
+            commit.name === name);
+    };
 };
 
 const getRequiredUserInfo = function (rawOutput) {
     let repos = rawOutput.repositories.nodes;
     let languages = repos.reduce(getLangForRepo, []);
-    // console.log(JSON.stringify(repos, null, 2));
     let username = rawOutput.login;
     let name = rawOutput.name;
-    let commits = getCommitsByUser(getAllCommits(repos), username, name);
-    console.log(JSON.stringify(getAllCommits(repos), null, 2));
-    // let commits = getAllCommits(repos).filter(isCommitedByUser(username, name));
+    let allCommits = repos.reduce(getRepoCommits, []);
+    let commits = allCommits.filter(isCommitByUser(username, name));
     let latestCommit = commits.reduce(getLatestCommit, {});
+    delete latestCommit.name;
+    delete latestCommit.username;
     lastestCommit = Object.values(latestCommit).join(' \n- ');
     return [username, name, repos.length,
         languages,
@@ -58,4 +63,11 @@ const getRequiredUserInfo = function (rawOutput) {
     ];
 };
 
-module.exports = getRequiredUserInfo;
+module.exports = {
+    getRequiredUserInfo: getRequiredUserInfo,
+    getLangForRepo: getLangForRepo,
+    getLatestCommit: getLatestCommit,
+    getRepoCommits: getRepoCommits,
+    isCommitByUser: isCommitByUser,
+    formatCommit: formatCommit
+};
