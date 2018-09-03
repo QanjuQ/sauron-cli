@@ -1,6 +1,8 @@
 const Table = require('cli-table');
+const QueryGenerator = require('./query_generator.js');
 const getRequiredUserInfo = require('./utils.js').getRequiredUserInfo;
 
+const queryGenerator = new QueryGenerator();
 const chars = {
     'top': '═',
     'top-mid': '╤',
@@ -32,10 +34,13 @@ class GitHubAccess {
         this.githubApi = githubApi;
     }
 
-    fetchDataOfUsers(query, callback, vorpal) {
+    fetchDataOfUsers(args, callback, vorpal) {
+        let query = queryGenerator.getFetchUsersSummaryQuery(args.usernames);
         this.githubApi.query(query, null, (response, err) => {
             if (err) {
                 vorpal.log(JSON.stringify(err, null, 2));
+            } else if (args.options.raw) {
+                vorpal.log(JSON.stringify(response.data, null, 2));
             } else {
                 let usersInfo = Object.values(response.data).map(getRequiredUserInfo);
                 let table = createTable();
