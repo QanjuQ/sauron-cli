@@ -34,6 +34,12 @@ class GitHubAccess {
         this.githubApi = githubApi;
     }
 
+    usernamePresent(args, vorpal) {
+        if (args.usernames)
+            return true;
+        return vorpal.chalk.red("username not given");
+    }
+
     fetchDataOfUsers(args, callback, vorpal) {
         let query = queryGenerator.getFetchUsersSummaryQuery(args.usernames);
         this.githubApi.query(query, null, (response, err) => {

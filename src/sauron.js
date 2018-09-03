@@ -20,6 +20,7 @@ vorpal
 vorpal.command('userinfo [usernames...]',
         'takes git usernames as argument and prints info of all users specified')
     .option('-r ,--raw', "prints the rawoutput on console")
+    .validate((args) => gitHubAccess.usernamePresent(args, vorpal))
     .action(function (args, callback) {
         gitHubAccess.fetchDataOfUsers(args, callback, this);
     });
