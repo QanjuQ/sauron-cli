@@ -18,6 +18,8 @@ vorpal
     .delimiter('==>')
     .show();
 
+vorpal.history("sauron");
+
 vorpal.command('userinfo [usernames...]',
         'takes git usernames as argument and prints info of all users specified')
     .option('-r ,--raw', "prints the rawoutput on console")
