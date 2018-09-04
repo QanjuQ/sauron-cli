@@ -1,4 +1,4 @@
-const userSummaryFrag = require("./queries.js").userSummary;
+const userSummaryFrag = require("./queries.js");
 
 class QueryGenerator {
     constructor() {}

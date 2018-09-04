@@ -33,4 +33,4 @@ const userSummary = `fragment userSummary on User{
       }
     }
   }`;
-exports.userSummary = userSummary;
+module.exports = userSummary;

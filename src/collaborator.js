@@ -2,8 +2,6 @@ const http = require('https');
 const Table = require('cli-table');
 const token = process.env.GIT_API_TOKEN;
 
-const toString = (data) => (JSON.stringify(data, null, 2));
-
 const chars = {
     'top': '═',
     'top-mid': '╤',
@@ -86,7 +84,6 @@ const validateArgsArePresent = function (args) {
     let options = args.options;
     let areOptionsPresent = options.org && options.repo && options.collab;
     let areArgumentsPresent = args.org && args.repo && args.collab;
-    console.log(args);
     if (areArgumentsPresent) {
         return true;
     }
@@ -94,7 +91,7 @@ const validateArgsArePresent = function (args) {
         args = options;
         return true;
     }
-    return this.chalk.red("pass all the options");
+    return this.chalk.red("pass all the options\n type help or [command --help] ");
 };
 
 const addCollaborator = function (args, callback) {
@@ -107,7 +104,7 @@ const addCollaborator = function (args, callback) {
 const removeCollaborator = function (args, callback) {
     options.method = 'DELETE';
     options.path = `/repos/${args.org}/${args.repo}/collaborators/${args.collab}`;
-    const message = `${args.collab} removed from ${args.repo}`;
+    const message = `${args.collab} removed from ${args.repo} as collaborator`;
     request.call(this, message, options, callback);
 }
 
