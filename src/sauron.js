@@ -36,8 +36,8 @@ vorpal.command('show <variable>', 'prints what is stored in variable')
 vorpal.command('storedvariables', 'shows the variable that you stored')
     .action(userStore.getStoredVariables.bind(userStore));
 
-vorpal.command('addcollaborator <owner> <repo> <collaborator>', 'add a collaborator and sends him a email')
+vorpal.command('addcollaborator <owner> <repo> <collaborator>', 'add a collaborator and sends him a invitation')
     .action(collaborator.addCollaborator);
 
-vorpal.command('removecollaborator <owner> <repo> <collaborator>', 'add a collaborator and sends him a email')
+vorpal.command('removecollaborator <owner> <repo> <collaborator>', 'removes a collaborator')
     .action(collaborator.removeCollaborator);
