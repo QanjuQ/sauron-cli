@@ -23,6 +23,7 @@ vorpal.history("sauron");
 vorpal.command('userinfo [usernames...]',
         'takes git usernames as argument and prints info of all users specified')
     .option('-r ,--raw', "prints the rawoutput on console")
+    .alias("u")
     .validate((args) => gitHubAccess.usernamePresent(args, vorpal))
     .action(function (args, callback) {
         gitHubAccess.fetchDataOfUsers(args, callback, this);
@@ -36,10 +37,21 @@ vorpal.command('show <variable>', 'prints what is stored in variable')
     .action(userStore.getVariable.bind(userStore));
 
 vorpal.command('storedvariables', 'shows the variable that you stored')
+    .alias("savedv")
     .action(userStore.getStoredVariables.bind(userStore));
 
-vorpal.command('addcollaborator <owner> <repo> <collaborator>', 'add a collaborator and sends him a invitation')
+vorpal.command('addcollaborator [org] [repo] [collab]', 'add a collaborator and sends him a invitation')
+    .option('-o', '--org', "option to provide owner or organisation")
+    .option('-r', '--repo', "option to provide repository")
+    .option('-c', '--collab', "option to provide collab")
+    .alias('addc')
+    .validate(collaborator.validateArgsArePresent.bind(vorpal))
     .action(collaborator.addCollaborator);
 
-vorpal.command('removecollaborator <owner> <repo> <collaborator>', 'removes a collaborator')
+vorpal.command('removecollaborator [org] [repo] [collab]', 'removes a collaborator')
+    .option('-o', '--org', "option to provide owner or organisation")
+    .option('-r', '--repo', "option to provide repository")
+    .option('-c', '--collab', "option to provide collab")
+    .alias("remc")
+    .validate(collaborator.validateArgsArePresent.bind(vorpal))
     .action(collaborator.removeCollaborator);

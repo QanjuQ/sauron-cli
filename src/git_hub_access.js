@@ -50,7 +50,7 @@ class GitHubAccess {
             } else {
                 let usersInfo = Object.values(response.data).map(getRequiredUserInfo);
                 let table = createTable();
-                usersInfo.forEach((userinfo) => table.push(userinfo));
+                table.push.apply(table, usersInfo);
                 vorpal.log(table.toString());
             }
             callback();
