@@ -39,18 +39,18 @@ vorpal.command('storedvariables', 'shows the variable that you stored')
     .alias("savedv")
     .action(userStore.getStoredVariables.bind(userStore));
 
-vorpal.command('addcollaborator [org] [repo] [collab]', 'add a collaborator and sends him a invitation')
+vorpal.command('addcollaborator [org] [repo] [collab...]', 'add a collaborator(s) and sends him a invitation')
     .option('-o', '--org', "option to provide owner or organisation")
     .option('-r', '--repo', "option to provide repository")
-    .option('-c', '--collab', "option to provide collab")
+    .option('-c', '--collab', "option to provide collabortors(s)")
     .alias('addc')
     .validate(collaborator.validateArgsArePresent.bind(vorpal))
     .action(collaborator.addCollaborator);
 
-vorpal.command('removecollaborator [org] [repo] [collab]', 'removes a collaborator')
+vorpal.command('removecollaborator [org] [repo] [collab...]', 'removes a collaborator(s)')
     .option('-o', '--org', "option to provide owner or organisation")
     .option('-r', '--repo', "option to provide repository")
-    .option('-c', '--collab', "option to provide collab")
+    .option('-c', '--collab', "option to provide collabortor(s)")
     .alias("remc")
     .validate(collaborator.validateArgsArePresent.bind(vorpal))
     .action(collaborator.removeCollaborator);

@@ -96,16 +96,20 @@ const validateArgsArePresent = function (args) {
 
 const addCollaborator = function (args, callback) {
     options.method = 'PUT';
-    options.path = `/repos/${args.org}/${args.repo}/collaborators/${args.collab}`;
-    const message = `${args.collab} is already a collaborator on ${args.repo}`;
-    request.call(this, message, options, callback);
+    args.collab.forEach(collab => {
+        options.path = `/repos/${args.org}/${args.repo}/collaborators/${collab}`;
+        const message = `${collab} is already a collaborator on ${args.repo}`;
+        request.call(this, message, options, callback);
+    });
 };
 
 const removeCollaborator = function (args, callback) {
     options.method = 'DELETE';
-    options.path = `/repos/${args.org}/${args.repo}/collaborators/${args.collab}`;
-    const message = `${args.collab} removed from ${args.repo} as collaborator`;
-    request.call(this, message, options, callback);
+    args.collab.forEach(collab => {
+        options.path = `/repos/${args.org}/${args.repo}/collaborators/${collab}`;
+        const message = `${collab} removed from ${args.repo} as collaborator`;
+        request.call(this, message, options, callback);
+    });
 }
 
 module.exports = {
