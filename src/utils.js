@@ -1,3 +1,21 @@
+const chars = {
+    'top': '═',
+    'top-mid': '╤',
+    'top-left': '╔',
+    'top-right': '╗',
+    'bottom': '═',
+    'bottom-mid': '╧',
+    'bottom-left': '╚',
+    'bottom-right': '╝',
+    'left': '║',
+    'left-mid': '╟',
+    'mid': '─',
+    'mid-mid': '┼',
+    'right': '║',
+    'right-mid': '╢',
+    'middle': '│'
+};
+
 const isNotPresent = (languages, language) => {
     return !languages.includes(language);
 };
@@ -64,6 +82,7 @@ const getRequiredUserInfo = function (rawOutput) {
 };
 
 module.exports = {
+    chars: chars,
     getRequiredUserInfo: getRequiredUserInfo,
     getLangForRepo: getLangForRepo,
     getLatestCommit: getLatestCommit,

@@ -1,24 +1,7 @@
 const http = require('https');
 const Table = require('cli-table');
 const token = process.env.GIT_API_TOKEN;
-
-const chars = {
-    'top': '═',
-    'top-mid': '╤',
-    'top-left': '╔',
-    'top-right': '╗',
-    'bottom': '═',
-    'bottom-mid': '╧',
-    'bottom-left': '╚',
-    'bottom-right': '╝',
-    'left': '║',
-    'left-mid': '╟',
-    'mid': '─',
-    'mid-mid': '┼',
-    'right': '║',
-    'right-mid': '╢',
-    'middle': '│'
-};
+const chars = require('./utils.js').chars;
 
 const statusCodes = {
     204: (res, content) => {
@@ -64,8 +47,8 @@ const request = function (message, options, callback) {
         res.message = message;
         printOuput(vorpal, res, callback);
     });
-    req.on('error', (e) => {
-        vorpal.log(`problem with request: ${e.message}`);
+    req.on('error', (error) => {
+        vorpal.log(`problem with request: ${error.message}`);
     });
     req.end();
 };
