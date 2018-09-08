@@ -39,6 +39,11 @@ const printOuputTable = function() {
     messages =[];
 }; 
 
+const cleanUp = ()=>{
+    output = [];
+    messages =[];
+};
+
 const printOutput = function() {
     let table = new Table({
         chars: chars,
@@ -47,8 +52,6 @@ const printOutput = function() {
     });
     table.push.apply(table,messages.map((msg,index)=>([index,msg])));
     this.log(table.toString());
-    output = [];
-    messages =[];
 };
 
 
@@ -81,17 +84,24 @@ const httpRequest = function (message,options) {
     });
 };
 
-const addCollaborator = function (args, callback) {
-    options.method = 'PUT';
+const getPath = (args,collab) =>(`/repos/${args.org}/${args.repo}/collaborators/${collab}`);
+
+const getMessage = {
+    PUT : (collab,repo) => (`${collab} is already a collaborator on ${repo}`),
+    DELETE : (collab,repo) => (`${collab} is already a collaborator on ${repo}`)
+};
+
+const createPromises = function(args,print,callback) {
     let promises = [];
     args.collab.forEach(collab => {
-        options.path = `/repos/${args.org}/${args.repo}/collaborators/${collab}`;
-        const message = `${collab} is already a collaborator on ${args.repo}`;
+        options.path = getPath(args,collab);
+        const message = getMessage[options.method](collab,args.repo);
         promises.push(httpRequest(message, options));
     });
     Promise.all(promises)
-        .then(printOuputTable.bind(this))
+        .then(print.bind(this))
         .then(callback)
+        .then(cleanUp)
         .catch((error)=>{
             this.log(error.message);
             callback();
@@ -112,25 +122,15 @@ const validateArgsArePresent = function (args) {
     return this.chalk.red("pass all the options\n type help or [command --help] ");
 };
 
-
+const addCollaborator = function (args, callback) {
+    options.method = 'PUT';
+    createPromises.call(this,args,printOuputTable,callback);
+};
 
 const removeCollaborator = function (args, callback) {
     options.method = 'DELETE';
-    let promises = [];
-    args.collab.forEach(collab => {
-        options.path = `/repos/${args.org}/${args.repo}/collaborators/${collab}`;
-        const message = `${collab} removed from ${args.repo} as collaborator`;
-        promises.push(httpRequest(message, options));
-    });
-    Promise.all(promises)
-        .then(printOutput.bind(this))
-        .then(callback)
-        .catch((error)=>{
-            this.log(error);
-            callback();
-        });
+    createPromises.call(this,args,printOutput,callback);
 };
-
 
 module.exports = {
     addCollaborator: addCollaborator,
