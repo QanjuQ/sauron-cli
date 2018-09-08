@@ -1,7 +1,7 @@
 const GithubGraphQLApi = require('node-github-graphql');
 const vorpal = require('vorpal')();
 
-const collaborator = require('./collaborator.js');
+const collaborator = require('./collaborator1.js');
 const UserStore = require('./users_store');
 const GitHubAccess = require('./git_hub_access.js');
 
